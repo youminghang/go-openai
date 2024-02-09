@@ -8,7 +8,7 @@ ROOT_DIR := $(abspath $(shell cd $(COMMON_SELF_DIR)/ && pwd -P))
 OUTPUT_DIR := $(ROOT_DIR)/_output
 
 # ==============================================================================
-# 定义 Makefile all 伪目标，执行 `make` 时，会默认会执行 all 伪目标
+# 定义 Makefile all 伪目标，执行 `make` 时，会默认会执行 all 伪目标Fskip
 .PHONY: all
 all: add-copyright format build
 

@@ -9,7 +9,11 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+	"github.com/youminghang/go-openai/configs"
 )
+
+var cfgFile string
 
 // 创建一个*cobra.Command对象，之后就可以是用Command的execute方法来启动
 func NewOpenAiCommmand() *cobra.Command {
@@ -39,10 +43,24 @@ func NewOpenAiCommmand() *cobra.Command {
 		},
 	}
 
+	// 以下设置，使得 initConfig 函数在每个命令运行时都会被调用以读取配置
+	cobra.OnInitialize(initConfig)
+
+	// 在这里您将定义标志和配置设置。
+
+	// Cobra 支持持久性标志(PersistentFlag)，该标志可用于它所分配的命令以及该命令下的每个子命令
+	cmd.PersistentFlags().StringVarP(&cfgFile, "config", "c", "", "The path to the miniblog configuration file. Empty string for no configuration file.")
+
+	// Cobra 也支持本地标志，本地标志只能在其所绑定的命令上使用
+	cmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+
 	return cmd
 }
 
 func run() error {
-	fmt.Println("Hello OpenAi!")
+	if err := viper.Unmarshal(configs.OpenaiServerConfigInfo); err != nil {
+		panic(err)
+	}
+	fmt.Printf("配置信息:%v", configs.OpenaiServerConfigInfo)
 	return nil
 }
