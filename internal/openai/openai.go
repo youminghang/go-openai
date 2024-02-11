@@ -6,11 +6,12 @@
 package openai
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/youminghang/go-openai/configs"
+	"github.com/youminghang/go-openai/internal/pkg/log"
 )
 
 var cfgFile string
@@ -29,6 +30,10 @@ func NewOpenAiCommmand() *cobra.Command {
 		SilenceUsage: true,
 		// 指定调用 cmd.Execute() 时，执行的 Run 函数，函数执行失败会返回错误信息
 		RunE: func(cmd *cobra.Command, args []string) error {
+			// 初始化日志
+			log.Init(logOptions())
+			defer log.Sync() // Sync 将缓存中的日志刷新到磁盘文件中``
+
 			return run()
 		},
 		// 这里设置命令运行时，不需要指定命令行参数
@@ -58,9 +63,16 @@ func NewOpenAiCommmand() *cobra.Command {
 }
 
 func run() error {
-	if err := viper.Unmarshal(configs.OpenaiServerConfigInfo); err != nil {
-		panic(err)
-	}
-	fmt.Printf("配置信息:%v", configs.OpenaiServerConfigInfo)
+	// if err := viper.Unmarshal(configs.OpenaiServerConfigInfo); err != nil {
+	// 	panic(err)
+	// }
+	// fmt.Printf("配置信息:%v", configs.OpenaiServerConfigInfo)
+	// return nil
+
+	// 打印所有的配置项及其值
+	settings, _ := json.Marshal(viper.AllSettings())
+	log.Infow(string(settings))
+	// 打印 db->username 配置项的值
+	log.Infow(viper.GetString("db.username"))
 	return nil
 }
