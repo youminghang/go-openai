@@ -27,6 +27,6 @@ go.work
 # End of https://www.toptal.com/developers/gitignore/api/go
 
 # Custom
-/ _output
-/ tmp
-/ .vscode
+/_output
+/tmp
+/.vscode
