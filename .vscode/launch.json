@@ -11,7 +11,7 @@
             "mode": "auto",
             "program": "${fileDirname}",
             "env": {},
-            "args": ["-c", "configs/openai.yaml"]
+            "args": ["-c", "/workspace/go-openai/configs/openai.yaml"]
         }
     ]
 }

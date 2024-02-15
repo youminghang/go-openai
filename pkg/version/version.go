@@ -24,7 +24,7 @@ var (
 	GitTreeState = ""
 )
 
-// Info 包含了版本信息
+// Info 包含了版本信息.
 type Info struct {
 	GitVersion   string `json:"gitVersion"`
 	GitCommit    string `json:"gitCommit"`

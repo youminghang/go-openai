@@ -11,17 +11,17 @@ OUTPUT_DIR := $(ROOT_DIR)/_output
 # 定义版本相关变量
 
 ## 指定应用使用的 version 包，会通过 `-ldflags -X` 向该包中指定的变量注入值
-VERSION_PACKAGE=github.com/youminghang/openai/pkg/version
+VERSION_PACKAGE=github.com/youminghang/go-openai/pkg/version
 
 ## 定义 VERSION 语义化版本号
 ifeq ($(origin VERSION), undefined)
 VERSION := $(shell git describe --tags --always --match='v*')
 endif
 
-## 检查仓库代码是否是 dirty （默认dirty）
-GIT_TREE_STATUE:="dirty"
-ifeq (,$(shell git status --porcelain 22>/dev/null))
-	GIT_TREE_STATUE="clean"
+## 检查代码仓库是否是 dirty（默认dirty）
+GIT_TREE_STATE:="dirty"
+ifeq (, $(shell git status --porcelain 2>/dev/null))
+	GIT_TREE_STATE="clean"
 endif
 GIT_COMMIT:=$(shell git rev-parse HEAD)
 

@@ -7,8 +7,11 @@ package openai
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
+	"net/http"
 
+	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/youminghang/go-openai/internal/pkg/log"
@@ -80,5 +83,38 @@ func run() error {
 	log.Infow(string(settings))
 	// 打印 db->username 配置项的值
 	log.Infow(viper.GetString("db.username"))
+
+	// 设置 Gin 模式
+	gin.SetMode(viper.GetString("runmode"))
+
+	// 创建 Gin 引擎
+	g := gin.New()
+
+	// 注册404 Handler
+	g.NoRoute(func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, gin.H{
+			"code":    10003,
+			"message": "Page not found",
+		})
+	})
+
+	// 注册 /healthz handler
+	g.GET("/healthz", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, gin.H{"status": "ok"})
+	})
+
+	// 创建 HTTP Server 实例
+	httpsrv := &http.Server{
+		Addr:    viper.GetString("addr"),
+		Handler: g,
+	}
+
+	// 运行 HTTP 服务器
+	// 打印一条日志，用来提示 HTTP 服务已经启动，方便排查
+	log.Infow("Start to listening the incoming requests on http address", "addr", viper.GetString("addr"))
+	if err := httpsrv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		log.Fatalw(err.Error())
+	}
+
 	return nil
 }

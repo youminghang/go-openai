@@ -28,6 +28,6 @@ func NewOptions() *Options {
 		DisableStacktrace: false,
 		Level:             zapcore.InfoLevel.String(),
 		Format:            "console",
-		OutputPaths:       []string{"stdout"},
+		OutputPaths:       []string{"/tmp/openai.log", "stdout"},
 	}
 }
